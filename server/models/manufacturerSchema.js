@@ -23,4 +23,4 @@ const manufacturerSchema = new mongoose.Schema({
 
 const Manufacturer = mongoose.model('Manufacturer', manufacturerSchema);
 
-module.exports(Manufacturer);
+module.exports = Manufacturer;

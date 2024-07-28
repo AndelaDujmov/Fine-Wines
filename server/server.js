@@ -1,48 +1,32 @@
+if (process.env.NODE_ENV != 'production')
+  require('dotenv').config();
 
-const mongoose = require('mongoose');
+const express = require('express');
+const cors = require('cors');
+const wineRouter = require('./routes/wineRouter');
+const manufacturerRouter = require('./routes/manufacturerRouter');
+const body_parser = require('body-parser');
+const connectToDb = require('./config/connectToDb');
 
+const app = express();
+app.use(body_parser.json());
+app.use(body_parser.urlencoded({extended: true}));
+app.use(express.static('public'));
+app.use(cors());
+// app.use(cors({
+//   origin: "http://localhost:3000",
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type']
+// }))
 
-const CONNECTION_STRING = "mongodb+srv://andeladujmov3:WHC9AM6xCx0QovF1@cluster0.vgredfc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const DBNAME = "finewines";
-
-let database;
-
-mongoose.connect(CONNECTION_STRING)
-  .then(() => {
-    console.log('Connected to MongoDB successfully!');
-  })
-  .catch(error => {
-    console.error('Error connecting to MongoDB:', error);
-  });
-/*
-const wineSchema = new mongoose.Schema({
-  name: String,
-  type: String,
-  price: Number,
-  percentage: Number,
-  color: String,
-  manufacturer: String
-});
-
-const Wine = mongoose.model('Wine', wineSchema);
-
-const newWine = new Wine({
-  name: 'Cabernet Sauvignon',
-  type: 'Red',
-  price: 20,
-  percentage: 13.5,
-  color: 'Red',
-  manufacturer: 'Napa Valley'
-});
-
-newWine.save()
-  .then(() => console.log('New wine saved'))
-  .catch(error => console.error('Error saving wine:', error));
+connectToDb();
 
 app.get('/', (req, res) => {
-    if (!database) {
-        res.status(500).json({ error: 'Database connection not established' });
-        return;
-    }
-    res.status(200).json({ message: 'Server is running' });
-});*/
+  res.json({hello: 'world'});
+});
+
+app.use('/wines', wineRouter);
+
+app.use('/manufacturers', manufacturerRouter);
+
+app.listen(process.env.PORT);
