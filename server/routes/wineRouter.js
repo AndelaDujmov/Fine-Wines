@@ -43,6 +43,34 @@ router.post("/add", async (req, res) => {
   res.json({ wine: wine });
 });
 
-router.put("/:id", async (req, res) => {});
+
+router.put("/:id", async(req, res) => {
+  const wineId = req.params.id;
+  const initial = await Wine.findById(wineId);
+  
+  const wine = await Wine.findByIdAndUpdate(wineId, {
+    name: req.body.name ?? initial.name,
+    type: req.body.type ?? initial.type,
+    price: req.body.price ? Number(req.body.price) : initial.price,
+    alcoholPercentage: req.body.alcoholPercentage ?  Number(req.body.alcoholPercentage) : initial.alcoholPercentage,
+    manufacturer: req.body.manufacturer ?? initial.manufacturer,
+  });
+
+  res.json({wine: wine});
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  try{
+    const wineId = req.params.id;
+    const result = await Wine.findByIdAndDelete(wineId);
+
+    if (!result)
+      return res.status(404).json({message: "Not found"});
+
+    return res.status(200).json({message: "OK"});
+  }catch (error) {
+    res.status(500).json({message: error.message});
+  }
+});
 
 module.exports = router;

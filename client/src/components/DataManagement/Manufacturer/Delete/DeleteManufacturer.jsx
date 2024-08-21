@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import Spinner from '../../../HomePage/Spinner/Spinner';
 
-const Delete = () => {
+const DeleteManufacturer = () => {
     const navigate = useNavigate();
     const API_URL = "http://localhost:3000/";
     const { id } = useParams();
@@ -12,11 +12,10 @@ const Delete = () => {
 
     const handleDelete = async() => {   
         try {
-            const wineDeleteResponse = await axios.delete(API_URL + `wines/delete/${id}`);
-            const wineData = wineDeleteResponse.data;
-            console.log(wineData);
+            const manufacturerDeleteResponse = await axios.delete(API_URL + `manufacturers/delete/${id}`);
+            const manufacturerData = manufacturerDeleteResponse.data;
             setLoading(true);
-            navigate('/wines');
+            navigate('/manufacturers');
             
         } catch (error) {
             alert("Error fetching data");
@@ -26,7 +25,7 @@ const Delete = () => {
 
     return (
     <>
-        <BackButton destination='/wines' />
+        <BackButton destination='/manufacturers' />
         <div className="text-3xl my-4">Delete?</div>
       
             <div className="flex flex-col items-center border-2 border-gray-500 rounded-xl w-[600px] p-8 mx-auto">
@@ -39,4 +38,4 @@ const Delete = () => {
     </>)
 }
 
-export default Delete;
+export default DeleteManufacturer;

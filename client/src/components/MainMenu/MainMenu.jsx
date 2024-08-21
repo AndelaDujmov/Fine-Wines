@@ -1,29 +1,25 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const MainMenu = () => {
     const [wines, setWines] = useState([]);
 
-    const API_URL = "http://localhost:5000/finewines/";
+    const API_URL = "http://localhost:3000/";
 
     useEffect(() => {
-        fetch(API_URL+"wines")
-        .then(response => response.json())
-        .then(data => {
-            setWines(data);
-        })
-    });
+        fetch(API_URL + "wines")
+            .then(response => response.json())
+            .then(data => {
+                setWines(data);
+              //  console.log(data);
+            })
+            .catch(error => {
+                console.error("Error fetching data: ", error);
+            });
+    }, []); 
 
-    return(
+    return (
         <>
-            {wines.length === 0 ? (
-                <p>No wines available</p>
-            ) : (
-                <ul>
-                    {wines.map((wine, index) => (
-                        <li key={index}>{wine.name} - ${wine.price}</li>
-                    ))}
-                </ul>
-            )}
+        <p>Welcome</p>
         </>
     );
 }

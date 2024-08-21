@@ -2,11 +2,10 @@ const express = require('express');
 const Manufacturer = require('../models/manufacturerSchema');
 const router = express.Router();
 
-router.get("/", async(req, res) => {
+router.get("/", async (req, res) => {
     const manufacturers = await Manufacturer.find();
-    res.json({manufacturers: manufacturers});
-  });
-  
+    res.json({ manufacturers: manufacturers });
+});  
   
 router.get("/:id", async(req, res) => {
     const manufacturerId = req.params.id;
@@ -49,12 +48,26 @@ router.put("/:id", async(req, res) => {
     const manufacturer = await Manufacturer.findByIdAndUpdate(manufacturerId, {
     name: req.body.name ?? initial.name,
     establishedYear: req.body.establishedYear ?? initial.establishedYear,
-    country: Number(req.body.country) ?? initial.country,
+    country: req.body.country ?? initial.country,
     description: req.body.description ?? initial.description,
     logoUrl: req.body.logoUrl ?? initial.logoUrl
     });
 
     res.json({manufacturer: manufacturer});
 });
+
+router.delete("/delete/:id", async (req, res) => {
+    try{
+      const manufacturerId = req.params.id;
+      const result = await Manufacturer.findByIdAndDelete(manufacturerId);
+  
+      if (!result)
+        return res.status(404).json({message: "Not found"});
+  
+      return res.status(200).json({message: "OK"});
+    }catch (error) {
+      res.status(500).json({message: error.message});
+    }
+  });
 
 module.exports = router;
