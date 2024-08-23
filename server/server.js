@@ -3,8 +3,10 @@ if (process.env.NODE_ENV != 'production')
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const wineRouter = require('./routes/wineRouter');
 const manufacturerRouter = require('./routes/manufacturerRouter');
+const authRouter = require('./routes/userManagementRouter');
 const body_parser = require('body-parser');
 const connectToDb = require('./config/connectToDb');
 
@@ -13,11 +15,7 @@ app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use(cors());
-// app.use(cors({
-//   origin: "http://localhost:3000",
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type']
-// }))
+app.use(cookieParser());
 
 connectToDb();
 
@@ -26,7 +24,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/wines', wineRouter);
-
 app.use('/manufacturers', manufacturerRouter);
+app.use('/auth', authRouter);
+
 
 app.listen(process.env.PORT);
