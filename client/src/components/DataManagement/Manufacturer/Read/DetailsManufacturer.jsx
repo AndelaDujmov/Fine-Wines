@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import BackButton from "../../../HomePage/BackButton/BackButton";
@@ -6,12 +6,11 @@ import BackButton from "../../../HomePage/BackButton/BackButton";
 const DetailsManufacturer = ({ wine, onClose }) => {
     const [manufacturer, setManufacturer] = useState({});
     const { id } = useParams();
-    const API_URL = "http://localhost:3000/";
 
     useEffect(() => {
         const fetchManufacturer = async () => {
             try {
-                const manufacturersResponse = await axios.get(API_URL + `manufacturers/${id}`);
+                const manufacturersResponse = await axios.get(`manufacturers/${id}`, { withCredentials: true });
                 const manufacturerData = manufacturersResponse.data.manufacturer;
     
                 setManufacturer(manufacturerData); 

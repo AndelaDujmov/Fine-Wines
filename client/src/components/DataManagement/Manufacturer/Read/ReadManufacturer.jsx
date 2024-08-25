@@ -1,41 +1,47 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { Link } from "react-router-dom";
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit } from 'react-icons/ai';
 import Spinner from "../../../HomePage/Spinner/Spinner";
+import { UserContext } from "../../../../../context/userContext";
 
 const ReadManufacturer = () => {
     const [manufacturers, setManufacturers] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const API_URL = "http://localhost:3000/";
-
+    const [loading, setLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
-   
-        fetch(API_URL + "manufacturers")
-            .then(response => response.json())
-            .then(data => {
-                setManufacturers(data.manufacturers);
+        axios.get(`manufacturers`, { withCredentials: true })
+            .then(response => {
+                setManufacturers(response.data.manufacturers);
                 setLoading(false);
-               
             })
             .catch(error => {
                 console.error("Error fetching data: ", error);
+                setLoading(false); // Stop loading on error
             });
 
-        
-    }, []);
+            if (user && Object.keys(user).length !== 0)
+                setIsAdmin(true);
+            else
+                setIsAdmin(false);
+    }, [isAdmin]);
+
 
     return (
         <div className="p-4">
         <h1 className="text-5xl font-extrabold text-center mb-4">Manufacturers</h1>
         <div className="flex justify-center mb-4">
-            <Link to="/manufacturers/create">
-                <MdOutlineAddBox className="text-sky-800 text-4xl" />
-            </Link>
+            {
+                isAdmin && (
+                    <Link to="/manufacturers/create">
+                        <MdOutlineAddBox className="text-sky-800 text-4xl" />
+                    </Link>
+                )
+            }
         </div>
     
         <div className="flex flex-col items-center">
@@ -69,8 +75,14 @@ const ReadManufacturer = () => {
                                         <td className="py-2 px-4 text-black">{manufacturer.establishedYear}</td>
                                         <td className="py-2 px-4 flex space-x-4 items-center justify-center">
                                             <Link to={`/manufacturers/details/${manufacturer._id}`}><BsInfoCircle className="text-3xl text-blue-300 hover:text-black cursor-pointer" /> </Link>
-                                            <Link to={`/manufacturers/edit/${manufacturer._id}`}><AiOutlineEdit className="text-2xl text-yellow-600" /></Link>
-                                            <Link to={`/manufacturers/delete/${manufacturer._id}`}><MdOutlineDelete className="text-2xl text-red-600" /></Link>
+                                         {
+                                            isAdmin && (
+                                                <>
+                                                   <Link to={`/manufacturers/edit/${manufacturer._id}`}><AiOutlineEdit className="text-2xl text-yellow-600" /></Link>
+                                                   <Link to={`/manufacturers/delete/${manufacturer._id}`}><MdOutlineDelete className="text-2xl text-red-600" /></Link>
+                                                </>
+                                            )
+                                         }
                                         </td>
                                     </tr>
                                 ))

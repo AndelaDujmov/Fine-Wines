@@ -1,19 +1,20 @@
 const express = require('express');
 const Wine = require('../models/wineSchema');
+const { checkAdmin, checkAuthenticated } = require('../middleware/checkRole');
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const wines = await Wine.find();
+  const wines = await Wine.find().sort({ name: 1});
   res.json({ wines: wines });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkAuthenticated, async (req, res) => {
   const wineId = req.params.id;
   const wine = await Wine.findById(wineId);
   res.json({ wine: wine });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", checkAdmin, async (req, res) => {
   const name = req.body.name;
   const price = Number(req.body.price);
   const alcoholPercentage = Number(req.body.alcoholPercentage);
@@ -43,8 +44,7 @@ router.post("/add", async (req, res) => {
   res.json({ wine: wine });
 });
 
-
-router.put("/:id", async(req, res) => {
+router.put("/:id", checkAdmin, async(req, res) => {
   const wineId = req.params.id;
   const initial = await Wine.findById(wineId);
   
@@ -59,7 +59,7 @@ router.put("/:id", async(req, res) => {
   res.json({wine: wine});
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", checkAdmin, async (req, res) => {
   try{
     const wineId = req.params.id;
     const result = await Wine.findByIdAndDelete(wineId);

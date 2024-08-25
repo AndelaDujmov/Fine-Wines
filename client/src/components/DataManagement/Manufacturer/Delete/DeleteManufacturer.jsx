@@ -6,14 +6,12 @@ import Spinner from '../../../HomePage/Spinner/Spinner';
 
 const DeleteManufacturer = () => {
     const navigate = useNavigate();
-    const API_URL = "http://localhost:3000/";
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
 
     const handleDelete = async() => {   
         try {
-            const manufacturerDeleteResponse = await axios.delete(API_URL + `manufacturers/delete/${id}`);
-            const manufacturerData = manufacturerDeleteResponse.data;
+            await axios.delete(`manufacturers/delete/${id}`, { withCredentials: true });
             setLoading(true);
             navigate('/manufacturers');
             

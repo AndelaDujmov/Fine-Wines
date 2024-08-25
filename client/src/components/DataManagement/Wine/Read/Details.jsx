@@ -6,12 +6,11 @@ import { AiOutlineClose } from 'react-icons/ai';
 const Details = ({ wine, onClose }) => {
     const [manufacturer, setManufacturer] = useState({});
     const { id } = useParams();
-    const API_URL = "http://localhost:3000/";
 
     useEffect(() => {
         const fetchManufacturer = async () => {
             try {
-                const manufacturersResponse = await axios.get(API_URL + `manufacturers/${wine.manufacturer}`);
+                const manufacturersResponse = await axios.get(`manufacturers/${wine.manufacturer}`, { withCredentials: true });
                 const manufacturerData = manufacturersResponse.data.manufacturer;
     
                 setManufacturer(manufacturerData); 
@@ -23,7 +22,7 @@ const Details = ({ wine, onClose }) => {
         };
     
         fetchManufacturer();
-    }, [wine]);
+    }, [wine.manufacturer]);
 
 
     return (
@@ -44,7 +43,7 @@ const Details = ({ wine, onClose }) => {
                         <span className="text-xl mr-4 text-gray-600">{wine.type}</span>
                     </div>
                     <div className="my-4">
-                        <span className="text-xl mr-4 text-gray-600">{manufacturer.name}</span>
+                        <span className="text-xl mr-4 text-gray-600">{wine.manufacturerName}</span>
                     </div>
                 </div>
             </div>

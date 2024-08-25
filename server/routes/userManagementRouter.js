@@ -1,9 +1,10 @@
 const express = require('express');
 const User = require('../models/userSchema');
-const router = express.Router();
+const { checkAdmin, checkAuthenticated } = require('../middleware/checkRole');
 const { hashPassword, comparePassword } = require('../helpers/authHelper');
 const jwt = require('jsonwebtoken');
-
+const { json } = require('body-parser');
+const router = express.Router();
 
 router.post('/register', async (req, res) => {
     try{
@@ -21,7 +22,7 @@ router.post('/register', async (req, res) => {
             return res.json({ error: "Username is already taken" })
 
         const hashedPassword = await hashPassword(password);
-        const user = User.create({firstName, lastName, username, email, password});
+        const user = User.create({firstName, lastName, username, email, password, isAdmin: false});
 
         return res.json(user);
         
@@ -44,27 +45,37 @@ router.post('/login', async (req, res) => {
         if (!ifPasswordsMatch)
             return res.json({ error: "Passwords dont match" });
 
-        jwt.sign({ username: user.username, id: user._id, email: user.email }, process.env.JWT_SECRET, {}, (err, token) => {
+        jwt.sign({ username: user.username, id: user._id, email: user.email, isAdmin: user.isAdmin }, process.env.JWT_SECRET, {}, (err, token) => {
             if (err) throw err;
-            res.cookie('token', token).json(user);
-        });
+        
+            res.cookie('token', token).json({user: user, token: token});
+        });   
 
     }catch(err){
 
     }
 });
 
-router.get('/user', async (req, res) => {
-    const { token } = req.cookies;
+router.post('/logout', async (req, res) => {
+    res.cookie('token', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) })
 
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-            if (err) throw err;
+    res.json({message: 'Logged out successfully!'});
+})
 
-            res.json(user);
-        })
-    }
+router.get('/user', checkAuthenticated,  async (req, res) => {
+   try{
+        const userId = req.user.id;
 
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json({ user });
+   } catch(err) {
+    res.status(500).json({ error: "Internal server error" });
+   }
 });
 
 module.exports = router;

@@ -4,7 +4,6 @@ import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
 
 const CreateManufacturer = () => {
-    const API_URL = "http://localhost:3000/";
     const [name, setName] = useState('');
     const [country, setCountry] = useState("");
     const [establishedYear, setEstablishedYear] = useState(0);
@@ -24,7 +23,7 @@ const CreateManufacturer = () => {
         if (establishedYear >= 1800 && establishedYear <= new Date().getFullYear())
         {
             axios
-            .post(API_URL + "manufacturers/add", data)
+            .post("manufacturers/add", data, { withCredentials: true })
             .then(navigate('/manufacturers'))
             .catch((error) => {
                 console.log(error);

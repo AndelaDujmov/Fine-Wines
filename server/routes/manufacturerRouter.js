@@ -1,8 +1,9 @@
 const express = require('express');
 const Manufacturer = require('../models/manufacturerSchema');
+const { checkAdmin, checkAuthenticated } = require('../middleware/checkRole');
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", checkAuthenticated, async (req, res) => {
     const manufacturers = await Manufacturer.find();
     res.json({ manufacturers: manufacturers });
 });  
@@ -14,7 +15,7 @@ router.get("/:id", async(req, res) => {
 });
 
 
-router.post('/add', async(req, res) => {
+router.post('/add', checkAdmin, async(req, res) => {
     const name = req.body.name;
     const establishedYear = Number(req.body.establishedYear);
     const country = req.body.country;
@@ -36,7 +37,7 @@ router.post('/add', async(req, res) => {
     res.json({manufacturer: manufacturer});
 });
 
-router.put("/:id", async(req, res) => {
+router.put("/:id", checkAdmin, async(req, res) => {
     const manufacturerId = req.params.id;
 
     const initial = await Manufacturer.findById(manufacturerId);
@@ -56,7 +57,7 @@ router.put("/:id", async(req, res) => {
     res.json({manufacturer: manufacturer});
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", checkAdmin, async (req, res) => {
     try{
       const manufacturerId = req.params.id;
       const result = await Manufacturer.findByIdAndDelete(manufacturerId);

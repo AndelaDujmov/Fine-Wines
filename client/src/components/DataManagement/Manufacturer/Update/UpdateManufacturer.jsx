@@ -5,7 +5,6 @@ import axios from "axios";
 import { useParams } from 'react-router-dom';
 
 const UpdateManufacturer = () => {
-    const API_URL = "http://localhost:3000/";
     const [name, setName] = useState('');
     const [country, setCountry] = useState("");
     const [establishedYear, setEstablishedYear] = useState(0);
@@ -40,8 +39,7 @@ const UpdateManufacturer = () => {
     useEffect(() => {
         const fetchManufacturer = async () => {
             try {
-               
-                const manufacturerData = await axios.get(API_URL + `manufacturers/${id}`);
+                const manufacturerData = await axios.get(`manufacturers/${id}`, { withCredentials: true });
                 const manufacturer = manufacturerData.data.manufacturer;
                 setName(manufacturer.name);
                 setCountry(manufacturer.country);

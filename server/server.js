@@ -12,10 +12,14 @@ const connectToDb = require('./config/connectToDb');
 
 const app = express();
 app.use(body_parser.json());
-app.use(body_parser.urlencoded({extended: true}));
 app.use(express.static('public'));
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:5173', 
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(express.urlencoded({extended:false}));
 
 connectToDb();
 

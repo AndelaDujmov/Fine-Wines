@@ -5,7 +5,6 @@ import axios from "axios";
 import { useParams } from 'react-router-dom';
 
 const Update = () => {
-    const API_URL = "http://localhost:3000/";
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
@@ -37,10 +36,10 @@ const Update = () => {
     useEffect(() => {
         const fetchWineAndManufacturer = async () => {
             try {
-                const manufacturersResponse = await axios.get(API_URL + "manufacturers");
+                const manufacturersResponse = await axios.get("manufacturers",{ withCredentials: true });
                 const manufacturerData = manufacturersResponse.data.manufacturers;
     
-                const wineData = await axios.get(API_URL + `wines/${id}`);
+                const wineData = await axios.get(`wines/${id}`, { withCredentials: true });
                 const wine = wineData.data.wine;
                 setName(wine.name);
                 setAlcoholPercentage(wine.alcoholPercentage);

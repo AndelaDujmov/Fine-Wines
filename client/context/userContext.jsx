@@ -1,21 +1,33 @@
 import axios from 'axios';
 import { createContext, useState, useEffect } from 'react';
 
-export const UserContext = createContext({})
+export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
-    const [user, setUser] = useState(null);
-    
+    const [user, setUser] = useState({});
+
     useEffect(() => {
-        if (!user){
-            axios.get('/auth/user')
-                .then(({data}) => setUser(data))
-        }
-    }, [])
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await axios.get('/auth/user', {
+                    withCredentials: true 
+                });
+
+                setUser(response.data.user);
+                console.log(response.data.user);
+            } catch (error) {
+                setUser({});
+              
+               
+            } 
+        };
+
+        fetchCurrentUser();
+    }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
-    )
+    );
 }

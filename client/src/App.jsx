@@ -16,9 +16,10 @@ import { UserContextProvider } from '../context/userContext'
 import Navigation from './components/Navigation/Navigation'
 import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
+import Logout from './components/UserManagement/Login/Logout'
 
 axios.defaults.baseURL = "http://localhost:3000/";
-//axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='/' element={<Read />}/>
         <Route path='/register' element={<Registration />}/>
         <Route path='/login' element={<Login />}/>
+        <Route path='/logout' element={<Logout />}/>
         <Route path='/wines' element={<Read/>}/>
         <Route path='/wines/create' element={<Create/>}/>
         <Route path='/wines/details/:id' element={<Details/>}/>
