@@ -25,10 +25,10 @@ const UpdateManufacturer = () => {
         if (establishedYear >= 1800 && establishedYear <= new Date().getFullYear())
         {
             axios
-            .put(API_URL + `manufacturers/${id}`, data)
+            .put(`manufacturers/${id}`, data)
             .then(navigate('/manufacturers'))
             .catch((error) => {
-                console.log(error);
+                toast(error);
                 navigate('/');
             });
         }

@@ -69,7 +69,7 @@ const Registration = () => {
 
     return (
         <form className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md space-y-4" onSubmit={handleSubmit}>
-            <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
+            <h2 className="text-2xl font-bold text-center mb-6 text-gray-600">Register</h2>
 
             <div className="space-y-2">
                 <input

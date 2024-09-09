@@ -17,6 +17,11 @@ import Navigation from './components/Navigation/Navigation'
 import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import Logout from './components/UserManagement/Login/Logout'
+import Wishlist from './components/DataManagement/Wishlist/Wishlist'
+import Cart from './components/DataManagement/Cart/Cart'
+import Users from './components/UserManagement/Management/Users'
+import UserDetails from './components/UserManagement/Management/UserDetails'
+
 
 axios.defaults.baseURL = "http://localhost:3000/";
 axios.defaults.withCredentials = true;
@@ -26,6 +31,7 @@ function App() {
   return (
     <UserContextProvider>
       <Navigation />
+      <br></br><br></br>
       <Toaster position="bottom-center" reverseOrder={false} toastOptions={{duration: 2000}}/>
       <Routes>
         <Route path='/' element={<Read />}/>
@@ -42,6 +48,10 @@ function App() {
         <Route path='/manufacturers/create' element={<CreateManufacturer/>}/>
         <Route path='/manufacturers/edit/:id' element={<UpdateManufacturer/>}/>
         <Route path='/manufacturers/delete/:id' element={<DeleteManufacturer/>}/>
+        <Route path='/wishlist' element={<Wishlist/>}/>
+        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/usermanagement' element={<Users/>}/>
+        <Route path='/user/:id' element={<UserDetails/>}/>
       </Routes>
     </UserContextProvider>
   )

@@ -4,7 +4,6 @@ import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
 
 const Create = () => {
-    const API_URL = "http://localhost:3000/";
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
     const [alcoholPercentage, setAlcoholPercentage] = useState(0);
@@ -22,7 +21,7 @@ const Create = () => {
         };
         console.log(data);
         axios
-        .post(API_URL + "wines/add", data)
+        .post("wines/add", data)
         .then(navigate('/wines'))
         .catch((error) => {
             console.log(error);
@@ -31,14 +30,13 @@ const Create = () => {
     }
 
     useEffect(() => {
-        fetch(API_URL + "manufacturers")
-            .then(response => response.json())
-            .then(data => {
-                setManufacturers(data.manufacturers);
-            })
-            .catch(error => {
-                console.error("Error fetching data: ", error);
-            });
+        axios.get("manufacturers")
+        .then(response => {
+            setManufacturers(response.data.manufacturers);
+        })
+        .catch(error => {
+            console.error("Error fetching data: ", error);
+        });
 
     }, []);
 

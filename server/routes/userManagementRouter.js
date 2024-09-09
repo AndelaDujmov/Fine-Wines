@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/logout', async (req, res) => {
-    res.cookie('token', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) })
+    res.cookie('token', '', { expires: new Date(0) })
 
     res.json({message: 'Logged out successfully!'});
 })
@@ -77,5 +77,45 @@ router.get('/user', checkAuthenticated,  async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
    }
 });
+
+router.get('/user/:id', checkAuthenticated,  async (req, res) => {
+    try{
+         const userId = req.params.id;
+ 
+         const user = await User.findById(userId);
+ 
+         if (!user) {
+             return res.status(404).json({ error: "User not found" });
+         }
+ 
+         res.json({ user });
+    } catch(err) {
+     res.status(500).json({ error: "Internal server error" });
+    }
+ });
+
+router.get('/users', checkAdmin, async (req, res) => {
+    try{
+        const userId = req.user.id;
+
+        const users = await User.find({ isAdmin: false });
+
+        res.json({ users });
+    } catch {
+
+    }
+})
+
+router.put('/user/passwd/:id', async (req, res) => {
+    try{
+        const userId = req.user.id;
+
+        const users = await User.find({ isAdmin: false });
+
+        res.json({ users });
+    } catch {
+
+    }
+})
 
 module.exports = router;

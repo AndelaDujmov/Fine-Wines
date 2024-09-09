@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../../../../context/userContext";
 
 const Login = () => {
     const [data, setData] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
     })
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const { fetchCurrentUser } = useContext(UserContext);
 
     const handleSubmit = async (e) => { 
         e.preventDefault();
@@ -38,6 +40,8 @@ const Login = () => {
                 toast.error(responseData.error);
                 return;
             }
+
+            await fetchCurrentUser();
 
             navigate('/');
         } catch (err) {

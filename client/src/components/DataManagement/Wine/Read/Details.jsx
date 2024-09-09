@@ -1,30 +1,7 @@
-import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { AiOutlineClose } from 'react-icons/ai';
 
 const Details = ({ wine, onClose }) => {
-    const [manufacturer, setManufacturer] = useState({});
-    const { id } = useParams();
-
-    useEffect(() => {
-        const fetchManufacturer = async () => {
-            try {
-                const manufacturersResponse = await axios.get(`manufacturers/${wine.manufacturer}`, { withCredentials: true });
-                const manufacturerData = manufacturersResponse.data.manufacturer;
-    
-                setManufacturer(manufacturerData); 
-               
-            } catch (error) {
-                console.log("Error fetching data:", error);
-                
-            }
-        };
-    
-        fetchManufacturer();
-    }, [wine.manufacturer]);
-
-
+   
     return (
         <div className="fixed bg-black bg-opacity-20 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center"
             onClick={onClose}>

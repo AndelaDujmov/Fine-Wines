@@ -3,7 +3,7 @@ const Manufacturer = require('../models/manufacturerSchema');
 const { checkAdmin, checkAuthenticated } = require('../middleware/checkRole');
 const router = express.Router();
 
-router.get("/", checkAuthenticated, async (req, res) => {
+router.get("/", async (req, res) => {
     const manufacturers = await Manufacturer.find();
     res.json({ manufacturers: manufacturers });
 });  

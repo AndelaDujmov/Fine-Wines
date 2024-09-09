@@ -14,19 +14,17 @@ export function UserContextProvider({ children }) {
                 });
 
                 setUser(response.data.user);
-                console.log(response.data.user);
+                
             } catch (error) {
                 setUser({});
-              
-               
             } 
         };
 
-        fetchCurrentUser();
+        fetchCurrentUser()
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, fetchCurrentUser }}>
             {children}
         </UserContext.Provider>
     );

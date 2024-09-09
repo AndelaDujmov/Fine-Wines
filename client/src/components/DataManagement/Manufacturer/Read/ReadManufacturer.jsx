@@ -21,14 +21,14 @@ const ReadManufacturer = () => {
             })
             .catch(error => {
                 console.error("Error fetching data: ", error);
-                setLoading(false); // Stop loading on error
+                setLoading(false); 
             });
 
-            if (user && Object.keys(user).length !== 0)
+            if (user && user.isAdmin)
                 setIsAdmin(true);
             else
                 setIsAdmin(false);
-    }, [isAdmin]);
+    }, [user]);
 
 
     return (

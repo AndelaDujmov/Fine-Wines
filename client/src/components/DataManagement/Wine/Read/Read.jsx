@@ -4,26 +4,24 @@ import { Link } from "react-router-dom";
 import { MdOutlineAddBox, MdOutlineDelete, MdAddShoppingCart } from 'react-icons/md';
 import { BiShow } from 'react-icons/bi';
 import { AiOutlineEdit, AiOutlineStar } from 'react-icons/ai';
-import Spinner from "../../../HomePage/Spinner/Spinner";
 import Details from "./Details";
 import { UserContext } from "../../../../../context/userContext";
+import toast from "react-hot-toast";
 
 const Read = () => {
     const [wines, setWines] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [modal, showModal] = useState(false);
+    const [modal, showModal] = useState({ visible: false, wine: null });
+    const { user } = useContext(UserContext);
     const [isAdmin, setIsAdmin] = useState(false);
     const [wineTypeFilter, setWineTypeFilter] = useState('');
     const [manufacturerFilter, setManufacturerFilter] = useState('');
     const [manufacturers, setManufacturers] = useState([]);
 
-    const user = useContext(UserContext);
-
     useEffect(() => {
         const fetchWinesAndManufacturers = async () => {
-            setLoading(true);
+          
             try {
-                const winesResponse = await axios.get("wines", { withCredentials: true });
+                const winesResponse = await axios.get("wines");
                 const winesData = winesResponse.data.wines;
 
                 const manufacturersResponse = await axios.get("manufacturers", { withCredentials: true });
@@ -39,22 +37,19 @@ const Read = () => {
                         return wine; 
                     }
                 }));
-
+             
                 setWines(winesWithManufacturerNames);
             } catch (error) {
                 console.error("Error fetching wines:", error);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchWinesAndManufacturers();
 
-        if (user && user.isAdmin) {
+        if (user && user.isAdmin)
             setIsAdmin(true);
-        } else {
+        else
             setIsAdmin(false);
-        }
     }, [user]);
 
     const filteredWines = wines.filter(wine => {
@@ -63,6 +58,34 @@ const Read = () => {
             (!manufacturerFilter || wine.manufacturerName === manufacturerFilter)
         );
     });
+
+    const openModal = (wine) => {
+        showModal({ visible: true, wine: wine })
+    }
+
+    const closeModal = () => {
+        showModal({ visible: false, wine: null })
+    }
+
+    const addToFavorites = async (wineId) => {
+        axios.post(`/wishlist/add/${wineId}`, { withCredentials : true })
+        .then(response => (
+            toast.success('Successfully added to the wishlist')
+        ))
+        .catch(err => (
+            toast.error('An error has occured')
+        ))
+    }
+
+    const addToCart = async (wineId) => {
+        axios.post(`/cart/add/${wineId}`, { withCredentials : true })
+        .then(response => (
+            toast.success('Successfully added to the cart')
+        ))
+        .catch(err => (
+            toast.error('An error has occured')
+        ))
+    }
 
     return (
         <div className="p-4">
@@ -103,9 +126,7 @@ const Read = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {loading ? (
-                    <Spinner />
-                ) : (
+                {(
                     filteredWines.length > 0 ? (
                         filteredWines.map((wine) => (
                             <div
@@ -116,7 +137,7 @@ const Read = () => {
                                 <h3 className="text-xs font-semibold mb-2 text-black">{wine.manufacturerName}</h3>
                                 <p className="text-sm mb-1 text-black">{wine.price} &euro;</p>
                                 <div className="flex justify-center gap-x-4">
-                                    <BiShow className="text-3xl text-blue-300 hover:text-black cursor-pointer" onClick={() => showModal(true)}/>
+                                    <BiShow className="text-3xl text-blue-300 hover:text-black cursor-pointer" onClick={() => openModal(wine)}/>
                                     {isAdmin && (
                                         <>
                                             <Link to={`/wines/edit/${wine._id}`}><AiOutlineEdit className="text-2xl text-yellow-600" /></Link>
@@ -125,14 +146,14 @@ const Read = () => {
                                     )}
                                     {!isAdmin && (
                                         <>
-                                            <Link to={`/wines/favorite/${wine._id}`}><AiOutlineStar className="text-2xl text-blue-600" /></Link>
-                                            <Link to={`/wines/delete/${wine._id}`}><MdAddShoppingCart className="text-2xl text-green-600" /></Link>
+                                            <AiOutlineStar onClick={() => addToFavorites(wine._id)} className="text-2xl text-blue-600" />
+                                            <MdAddShoppingCart onClick={() => addToCart(wine._id)} className="text-2xl text-green-600" />
                                         </>
                                     )}
                                 </div>
                                 {
-                                    modal && (
-                                        <Details wine={wine} onClose={() => showModal(false)} />
+                                    modal.visible && (
+                                        <Details wine={modal.wine} onClose={closeModal} />
                                     )
                                 }
                             </div>
