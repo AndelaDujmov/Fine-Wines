@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
             return res.json({ error: "Username is already taken" })
 
         const hashedPassword = await hashPassword(password);
-        const user = User.create({firstName, lastName, username, email, password, isAdmin: false});
+        const user = User.create({firstName, lastName, username, email, password: hashedPassword, isAdmin: false});
 
         return res.json(user);
         
@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
         if (!user)
             return res.json({ error: "User does not exist" });
 
-        const ifPasswordsMatch = user.password == password;
+        const ifPasswordsMatch = await comparePassword(password, user.password);
 
         if (!ifPasswordsMatch)
             return res.json({ error: "Passwords dont match" });
@@ -108,8 +108,6 @@ router.get('/users', checkAdmin, async (req, res) => {
 
 router.put('/user/passwd/:id', async (req, res) => {
     try{
-        const userId = req.user.id;
-
         const users = await User.find({ isAdmin: false });
 
         res.json({ users });

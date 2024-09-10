@@ -2,6 +2,8 @@ import { useEffect, useState  } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
+import toast from "react-hot-toast";
+import e from "express";
 
 const CreateManufacturer = () => {
     const [name, setName] = useState('');
@@ -24,9 +26,12 @@ const CreateManufacturer = () => {
         {
             axios
             .post("manufacturers/add", data, { withCredentials: true })
-            .then(navigate('/manufacturers'))
+            .then(() => { 
+                toast.success('Successfully created!');
+                navigate('/manufacturers')
+            })
             .catch((error) => {
-                console.log(error);
+                toast.error('Unable to update!');
                 navigate('/');
             });
         }

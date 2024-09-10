@@ -3,6 +3,7 @@ import BackButton from '../../../HomePage/BackButton/BackButton';
 import { useState } from 'react';
 import axios from 'axios';
 import Spinner from '../../../HomePage/Spinner/Spinner';
+import toast from 'react-hot-toast';
 
 const Delete = () => {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Delete = () => {
             const wineData = wineDeleteResponse.data;
             console.log(wineData);
             setLoading(true);
+            toast.success('Successfully deleted!');
             navigate('/wines');
             
         } catch (error) {

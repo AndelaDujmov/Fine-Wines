@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import toast from "react-hot-toast";
 
 const Update = () => {
     const [loading, setLoading] = useState(true);
@@ -24,8 +25,11 @@ const Update = () => {
         };
         console.log(data);
         axios
-        .put(API_URL + `wines/${id}`, data)
-        .then(navigate('/wines'))
+        .put(`wines/${id}`, data)
+        .then(() => {
+            toast.success('Successfully updated!');
+            navigate('/wines')
+        })
         .catch((error) => {
             console.log(error);
             navigate('/');

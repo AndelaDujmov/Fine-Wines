@@ -3,6 +3,7 @@ import BackButton from '../../../HomePage/BackButton/BackButton';
 import { useState } from 'react';
 import axios from 'axios';
 import Spinner from '../../../HomePage/Spinner/Spinner';
+import toast from 'react-hot-toast';
 
 const DeleteManufacturer = () => {
     const navigate = useNavigate();
@@ -13,10 +14,11 @@ const DeleteManufacturer = () => {
         try {
             await axios.delete(`manufacturers/delete/${id}`, { withCredentials: true });
             setLoading(true);
+            toast.success('Successfully deleted!');
             navigate('/manufacturers');
             
         } catch (error) {
-            alert("Error fetching data");
+            toast.error("Error fetching data");
             setLoading(false);
         }
     }

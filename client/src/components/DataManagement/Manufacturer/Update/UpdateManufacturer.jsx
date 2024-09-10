@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import toast from "react-hot-toast";
+import { table } from "console";
 
 const UpdateManufacturer = () => {
     const [name, setName] = useState('');
@@ -26,9 +28,12 @@ const UpdateManufacturer = () => {
         {
             axios
             .put(`manufacturers/${id}`, data)
-            .then(navigate('/manufacturers'))
+            .then(() => { 
+                toast.success('Sucessfully updated!');
+                navigate('/manufacturers')
+            })
             .catch((error) => {
-                toast(error);
+                toast.error('Unable to update!');
                 navigate('/');
             });
         }

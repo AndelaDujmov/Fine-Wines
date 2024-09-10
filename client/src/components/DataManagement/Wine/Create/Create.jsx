@@ -2,6 +2,7 @@ import { useEffect, useState  } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../../HomePage/BackButton/BackButton";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Create = () => {
     const [name, setName] = useState('');
@@ -22,7 +23,10 @@ const Create = () => {
         console.log(data);
         axios
         .post("wines/add", data)
-        .then(navigate('/wines'))
+        .then(() => {
+            navigate('/wines')
+            toast.success('Successfully added!');
+        })
         .catch((error) => {
             console.log(error);
             navigate('/');

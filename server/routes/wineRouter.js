@@ -25,7 +25,7 @@ router.post("/add", checkAdmin, async (req, res) => {
   const price = Number(req.body.price);
   const alcoholPercentage = Number(req.body.alcoholPercentage);
   const type = req.body.type;
-  const manufacturer = req.body.manufacturer;
+  const manufacturer = req.body.manufacturer  ;
 
   if (!name || !type || !manufacturer) {
     return res.status(400).send("Name, type, and manufacturer are required");

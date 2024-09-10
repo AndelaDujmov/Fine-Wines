@@ -85,15 +85,18 @@ const Read = () => {
     }
 
     return (
-        <div className="p-4">
+        <div className="p-4 mt-12">
               <div className="flex justify-center items-center mb-4 relative">
-              <h1 className="text-5xl font-extrabold uppercase text-center">Wine List</h1>
-
-                {isAdmin && (
-                    <Link to="/wines/create">
-                        <MdOutlineAddBox className='text-sky-800 text-4x1' />
-                    </Link>
-                )}
+              <h1 className="text-5xl font-extrabold text-center mb-4">Wines</h1><br/>
+             <div className="flex justify-center mb-4">
+                {
+                    isAdmin && (
+                        <Link to="/wines/create">
+                            <MdOutlineAddBox className="text-sky-800 text-4xl" />
+                        </Link>
+                    )
+                }
+            </div>
             </div>
 
             <Filters wineTypeFilter={wineFilters} setWineTypeFilter={setWineFilters} manufacturerFilter={manufacturerFilter} setManufacturerFilter={setManufacturerFilter} manufacturers={manufacturers} />

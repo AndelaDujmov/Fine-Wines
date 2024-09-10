@@ -6,7 +6,7 @@ import { MdOutlineDelete, MdAddShoppingCart } from 'react-icons/md';
 
 const Data = ({ filteredWines, openModal, addToFavorites, addToCart, isAdmin, closeModal, visible }) => {
     return(
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-120">
                 {(
                     filteredWines.length > 0 ? (
                         filteredWines.map((wine) => (
