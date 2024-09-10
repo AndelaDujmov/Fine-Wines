@@ -4,7 +4,13 @@ const { checkAdmin, checkAuthenticated } = require('../middleware/checkRole');
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const wines = await Wine.find().sort({ name: 1});
+  const { type, manufacturer } = req.query;
+  const query = {};
+
+  if (type) query.type = type;
+  if (manufacturer) query.manufacturer = manufacturer;
+
+  const wines = await Wine.find(query).sort({ name: 1});
   res.json({ wines: wines });
 });
 

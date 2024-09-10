@@ -19,12 +19,12 @@ const Navigation = () => {
     };
 
     useEffect(() => {
+        console.log(user);
         if (user && Object.keys(user).length !== 0) {
             setIsAuthenticated(true);
             setIsAdmin(user.isAdmin);
         } else {
             setIsAuthenticated(false);
-            setUser({});
             setIsAdmin(false);
         }
     }, [user]);

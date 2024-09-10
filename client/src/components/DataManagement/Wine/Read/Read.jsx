@@ -2,26 +2,30 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import { MdOutlineAddBox, MdOutlineDelete, MdAddShoppingCart } from 'react-icons/md';
-import { BiShow } from 'react-icons/bi';
-import { AiOutlineEdit, AiOutlineStar } from 'react-icons/ai';
-import Details from "./Details";
 import { UserContext } from "../../../../../context/userContext";
 import toast from "react-hot-toast";
+import Data from "./Data/Data";
+import Filters from "./Filters/Filters";
 
 const Read = () => {
     const [wines, setWines] = useState([]);
     const [modal, showModal] = useState({ visible: false, wine: null });
     const { user } = useContext(UserContext);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [wineTypeFilter, setWineTypeFilter] = useState('');
-    const [manufacturerFilter, setManufacturerFilter] = useState('');
+    const [wineFilters, setWineFilters] = useState(null);
+    const [manufacturerFilter, setManufacturerFilter] = useState(null);
     const [manufacturers, setManufacturers] = useState([]);
 
     useEffect(() => {
         const fetchWinesAndManufacturers = async () => {
           
             try {
-                const winesResponse = await axios.get("wines");
+                const winesResponse = await axios.get("wines", {
+                    params: {
+                        manufacturer: manufacturerFilter,
+                        type: wineFilters
+                    }
+                });
                 const winesData = winesResponse.data.wines;
 
                 const manufacturersResponse = await axios.get("manufacturers", { withCredentials: true });
@@ -50,14 +54,7 @@ const Read = () => {
             setIsAdmin(true);
         else
             setIsAdmin(false);
-    }, [user]);
-
-    const filteredWines = wines.filter(wine => {
-        return (
-            (!wineTypeFilter || wine.type === wineTypeFilter) &&
-            (!manufacturerFilter || wine.manufacturerName === manufacturerFilter)
-        );
-    });
+    }, [user, wineFilters, manufacturerFilter]);
 
     const openModal = (wine) => {
         showModal({ visible: true, wine: wine })
@@ -99,70 +96,9 @@ const Read = () => {
                 )}
             </div>
 
-            <div className="flex space-x-4 mb-8">
-                <select
-                    value={wineTypeFilter}
-                    onChange={(e) => setWineTypeFilter(e.target.value)}
-                    className="border-2 border-gray-500 py-2 px-4 text-black"
-                >
-                    <option value="">All Types</option>
-                    <option value="Red">Red</option>
-                    <option value="White">White</option>
-                    <option value="Rose">Rose</option>
-                </select>
+            <Filters wineTypeFilter={wineFilters} setWineTypeFilter={setWineFilters} manufacturerFilter={manufacturerFilter} setManufacturerFilter={setManufacturerFilter} manufacturers={manufacturers} />
 
-                <select
-                    value={manufacturerFilter}
-                    onChange={(e) => setManufacturerFilter(e.target.value)}
-                    className="border-2 border-gray-500 py-2 px-4 text-black"
-                >
-                    <option value="">All Manufacturers</option>
-                    {manufacturers.map((manufacturer) => (
-                        <option key={manufacturer._id} value={manufacturer.name}>
-                            {manufacturer.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(
-                    filteredWines.length > 0 ? (
-                        filteredWines.map((wine) => (
-                            <div
-                                key={wine.id}
-                                className="wine-item p-4 border border-gray-200 rounded-md bg-white shadow-md"
-                            >
-                                <h2 className="text-xl font-semibold mb-2 text-black">{wine.name}</h2>
-                                <h3 className="text-xs font-semibold mb-2 text-black">{wine.manufacturerName}</h3>
-                                <p className="text-sm mb-1 text-black">{wine.price} &euro;</p>
-                                <div className="flex justify-center gap-x-4">
-                                    <BiShow className="text-3xl text-blue-300 hover:text-black cursor-pointer" onClick={() => openModal(wine)}/>
-                                    {isAdmin && (
-                                        <>
-                                            <Link to={`/wines/edit/${wine._id}`}><AiOutlineEdit className="text-2xl text-yellow-600" /></Link>
-                                            <Link to={`/wines/delete/${wine._id}`}><MdOutlineDelete className="text-2xl text-red-600" /></Link>
-                                        </>
-                                    )}
-                                    {!isAdmin && (
-                                        <>
-                                            <AiOutlineStar onClick={() => addToFavorites(wine._id)} className="text-2xl text-blue-600" />
-                                            <MdAddShoppingCart onClick={() => addToCart(wine._id)} className="text-2xl text-green-600" />
-                                        </>
-                                    )}
-                                </div>
-                                {
-                                    modal.visible && (
-                                        <Details wine={modal.wine} onClose={closeModal} />
-                                    )
-                                }
-                            </div>
-                        ))
-                    ) : (
-                        <p>No wines available</p>
-                    )
-                )}
-            </div>
+            <Data filteredWines={wines} visible={modal.visible} openModal={openModal} addToFavorites={addToFavorites} addToCart={addToCart} isAdmin={isAdmin} closeModal={closeModal} />
         </div>
     );
 }
